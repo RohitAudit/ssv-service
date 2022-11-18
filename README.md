@@ -23,6 +23,7 @@ You can use this to repo to act as backend of your ssv staking solution
   - Creates a ethereum validator key and gives it to stakingpool for depositing for activation
   - Generates keyshares from the validator keystore and stakes them the SSV nodes
   - Saves the keystore and keyshares for verification at a later stage
+- Garuda also keeps eye on the SSV balance of stakingpool contract. If its less than the amount needed to register keys shares it will transfer some from your whitelist account.
 
 ### How to deploy the system?
 #### deploying smart contracts
@@ -67,10 +68,12 @@ pip install -r requirements.txt
   - PRIVATE_KEY(-priv): private key for the whitelisted address in the contracts to do the transaction
   - STAKING_POOL(-st): staking pool contract address 
   - SSV_CONTRACT(-ssv): ssv network contract address
+  - SSV_TOKEN(-token): ssv token contract address
   - ETH_RPC(-eth): rpc endpoint for ethereum node
 ```
-python main.py stake -eth <ETH_RPC> -priv <PRIVATE_KEY> -st <STAKING_POOL> -ssv <SSV_CONTRACT>
+python main.py stake -eth <ETH_RPC> -priv <PRIVATE_KEY> -st <STAKING_POOL> -token <SSV_TOKEN_ADDRESS> -ssv <SSV_CONTRACT>
 ```
+**NOTE: The private key you are giving should have SSV token and Eth to make transactions**
 
 - To create keys
   - OPERATOR_IDS: operator ids for keyshares
