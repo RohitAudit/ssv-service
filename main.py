@@ -14,7 +14,7 @@ import argparse
 import time
 from utils.eth_connector import EthNode
 from utils.stakepool import StakingPool
-from utils.ssv_network import SSVNetwork
+from utils.ssv_network import SSVNetwork, SSVToken
 
 
 def generate_keys(mnemonic, validator_start_index: int,
@@ -109,7 +109,9 @@ def start_staking(config):
             print("operator ids are:\n")
             print(operator_id)
             ssv_contract = SSVNetwork(config.ssv_contract, web3_eth.eth_node)
+            ssv_token = SSVToken(config.ssv_token, web3_eth.eth_node)
             network_fees = 0 if ssv_contract.get_network_fee() is None else ssv_contract.get_network_fee()
+
             print("network fee is:\n")
             print(network_fees)
             for keyfile in keystores:
@@ -117,6 +119,19 @@ def start_staking(config):
                 op = OperatorData("https://api.ssv.network")
                 file = ssv.generate_shares(op.get_operator_data(operator_id), network_fees)
                 shares = ssv.stake_shares(file)
+                if ssv_token.get_balance(web3_eth.eth_node.toChecksumAddress(config.staking_pool)) < int(shares["ssvAmount"]):
+                    print("ssv token balance of stakepool is less than the required amount. Sending some tokens")
+                    if ssv_token.get_balance(web3_eth.eth_node.toChecksumAddress(web3_eth.account.address)) > 2*int(shares["ssvAmount"]):
+                        tx = ssv_token.transfer_token(web3_eth.eth_node.toChecksumAddress(config.staking_pool),2*int(shares["ssvAmount"]),web3_eth.account.address)
+                        web3_eth.make_tx(tx)
+                        print("Added SSV tokens to stakepool account")
+                    elif ssv_token.get_balance(web3_eth.eth_node.toChecksumAddress(web3_eth.account.address)) > int(shares["ssvAmount"]):
+                        tx = ssv_token.transfer_token(web3_eth.eth_node.toChecksumAddress(config.staking_pool),int(shares["ssvAmount"]),web3_eth.account.address)
+                        web3_eth.make_tx(tx)
+                        print("WARNING!!!! Balance too low for account and stakepool for SSV tokens. Please add some")
+                    else:
+                        print("WARNING!!!! keys shares not added as your account doesn't have enough SSV tokens")
+                        break
                 tx = stake_pool.send_key_shares(shares["validatorPublicKey"], operator_id,
                                                 shares["sharePublicKeys"], shares["sharePrivateKey"],
                                                 int(shares["ssvAmount"]),
@@ -141,6 +156,7 @@ if __name__ == '__main__':
                        help="staking pool contract address", required=True)
     stake.add_argument("-ssv", "--ssv-contract",
                        help="ssv network contract address", required=True)
+    stake.add_argument("-token", "--ssv-token", help="ssv token address", required=True)
     stake.add_argument("-eth", "--eth-rpc",
                        help="rpc url for ethereum node", required=True)
     keys.add_argument("-id", "--operator-ids", type=int, nargs="+", required=True,
