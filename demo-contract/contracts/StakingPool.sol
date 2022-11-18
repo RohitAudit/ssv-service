@@ -9,14 +9,14 @@ import "./interfaces/ISSVNetwork.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract StakingPool is ReentrancyGuard {
-    uint256 roETHMinted = 0;
-    address WhitelistKeyGenerator;
+    uint256 public roETHMinted = 0;
+    address public WhitelistKeyGenerator;
     address public WITHDRAWAL_ADDRESS;
     IDepositContract immutable DepositContract;
     ICommon immutable CommonContract;
     uint256 public immutable VALIDATOR_AMOUNT = 32 * 1e18;
-    address SSV_TOKEN;
-    address SSV_ADDRESS;
+    address public SSV_TOKEN;
+    address public SSV_ADDRESS;
     uint32[4] OperatorIDs;
     bytes[] public Validators;
 
@@ -29,14 +29,18 @@ contract StakingPool is ReentrancyGuard {
         address withdrawal,
         address ssv_contract,
         address ssv_token,
-        uint32[4] memory operator_ids){
+        uint32[4] memory ids){
         WITHDRAWAL_ADDRESS = withdrawal;
         WhitelistKeyGenerator = keyGenerator;
         DepositContract = IDepositContract(depositAddress);
         CommonContract = ICommon(common);
         SSV_ADDRESS = ssv_contract;
         SSV_TOKEN = ssv_token;
-        OperatorIDs = operator_ids;
+        OperatorIDs = ids;
+    }
+
+    function getOperators() public view returns( uint32[4] memory){
+        return OperatorIDs;
     }
 
     function stake() public payable {
