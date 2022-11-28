@@ -23,12 +23,12 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 module.exports = {
   solidity: "0.8.4",
   networks: {
-    goerli: {
-      url: process.env.GOERLI_URL,
-      chainId: 5,
-      gasMultiplier: 2,
-      accounts: [process.env.DEPLOYER_KEY]
-    },
+    // goerli: {
+    //   url: process.env.GOERLI_URL,
+    //   chainId: 5,
+    //   gasMultiplier: 2,
+    //   accounts: [process.env.DEPLOYER_KEY]
+    // },
     localhost :{
       url: "http://localhost:8545"
     }

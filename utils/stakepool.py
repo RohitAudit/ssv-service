@@ -46,9 +46,9 @@ class StakingPool:
         "name": "getOperators",
         "outputs": [
             {
-                "internalType": "uint32[4]",
+                "internalType": "uint256[4]",
                 "name": "",
-                "type": "uint32[4]"
+                "type": "uint256[4]"
             }
         ],
         "stateMutability": "view",
@@ -57,7 +57,7 @@ class StakingPool:
         "inputs": [
             {
                 "internalType": "bytes",
-                "name": "publicKey",
+                "name": "pubkey",
                 "type": "bytes"
             },
             {
@@ -81,7 +81,7 @@ class StakingPool:
                 "type": "uint256"
             }
         ],
-        "name": "submitValidatorShares",
+        "name": "depositShares",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -115,5 +115,25 @@ class StakingPool:
 
         :return:
         """
-        return self.contract.functions.submitValidatorShares(pubkey, operator_ids, sharesPublicKeys, sharesEncrypted,
+        print("=================================\n")
+        print(pubkey)
+        print("=================================\n")
+
+        print(operator_ids)
+        print("=================================\n")
+
+        print(sharesPublicKeys)
+        print("=================================\n")
+
+        print(sharesEncrypted)
+        print("=================================\n")
+
+        print(amount)
+        return self.contract.functions.depositShares(pubkey, operator_ids, sharesPublicKeys, sharesEncrypted,
                                                              amount).buildTransaction({"from": account_address})
+
+
+if __name__ == '__main__':
+    web3_eth = Web3(Web3.HTTPProvider("http://localhost:8545"))
+    st = StakingPool("0xc351628EB244ec633d5f21fBD6621e1a683B1181", web3_eth)
+    print(st.get_operator_ids())

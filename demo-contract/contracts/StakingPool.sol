@@ -1,41 +1,49 @@
 pragma solidity ^0.8.0;
 
 import "./interfaces/IDepositContract.sol";
-import "./interfaces/ICommon.sol";
-import "./interfaces/IRoEth.sol";
-import "./Common.sol";
+// import "./interfaces/ICommon.sol";
+// import "./interfaces/IssvETH.sol";
+// import "./Common.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./interfaces/ISSVNetwork.sol";
+import "./SSVETH.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract StakingPool is ReentrancyGuard {
-    uint256 public roETHMinted = 0;
+    // uint256 public ssvETHMinted = 0;
     address public WhitelistKeyGenerator;
+
     address public WITHDRAWAL_ADDRESS;
     IDepositContract immutable DepositContract;
-    ICommon immutable CommonContract;
+    SSVETH ssvETH; 
+    // ICommon immutable CommonContract;
     uint256 public immutable VALIDATOR_AMOUNT = 32 * 1e18;
-    address public SSV_TOKEN;
-    address public SSV_ADDRESS;
+    address public SSV_TOKEN_ADDR;
+    address public SSV_CONTRACT_ADDR; // SSV_ADDRESS
     uint32[4] OperatorIDs;
     bytes[] public Validators;
+
+    // address public ssvETH_address;
+    address public Oracle_address;
 
     event UserStaked(address user_address, uint256 amount);
     event PubKeyDeposited(bytes pubkey);
 
     constructor(address keyGenerator,
         address depositAddress,
-        address common,
+        // address common,
         address withdrawal,
         address ssv_contract,
         address ssv_token,
+        address ssvETH_address, 
         uint32[4] memory ids){
         WITHDRAWAL_ADDRESS = withdrawal;
         WhitelistKeyGenerator = keyGenerator;
         DepositContract = IDepositContract(depositAddress);
-        CommonContract = ICommon(common);
-        SSV_ADDRESS = ssv_contract;
-        SSV_TOKEN = ssv_token;
+        ssvETH = SSVETH(ssvETH_address);
+        // CommonContract = ICommon(common);
+        SSV_CONTRACT_ADDR = ssv_contract;
+        SSV_TOKEN_ADDR = ssv_token;
         OperatorIDs = ids;
     }
 
@@ -45,8 +53,8 @@ contract StakingPool is ReentrancyGuard {
 
     function stake() public payable {
         require(msg.value > 0, "Can't stake zero amount");
-        uint256 amount_minted = msg.value * IRoEth(CommonContract.getRoETH()).sharePrice() / 1e18;
-        IRoEth(CommonContract.getRoETH()).mint(msg.sender, amount_minted);
+        uint256 amount_minted = msg.value * ssvETH.sharePrice() / 1e18;
+        ssvETH.mint(msg.sender, amount_minted);
         emit UserStaked(msg.sender, msg.value);
     }
 
@@ -64,9 +72,13 @@ contract StakingPool is ReentrancyGuard {
         bytes[] calldata sharesEncrypted,
         uint256 amount) external {
         require(msg.sender == WhitelistKeyGenerator, "Only whitelisted address can submit the key");
-        IERC20(SSV_TOKEN).approve(SSV_ADDRESS, amount);
-        ISSVNetwork(SSV_ADDRESS).registerValidator(pubkey, operatorIds, sharesPublicKeys, sharesEncrypted, amount);
+        IERC20(SSV_TOKEN_ADDR).approve(SSV_CONTRACT_ADDR, amount);
+        ISSVNetwork(SSV_CONTRACT_ADDR).registerValidator(pubkey, operatorIds, sharesPublicKeys, sharesEncrypted, amount);
         Validators.push(pubkey);
     }
 
+    // function getOracle() override external view returns (address){
+    // return Oracle;
+    // }
 }
+

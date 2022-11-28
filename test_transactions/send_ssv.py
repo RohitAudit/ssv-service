@@ -32,8 +32,7 @@ def send_ssv(priv_key, amount, address_ssv, address_stakepool):
     }]
     account = web_th.eth.account.privateKeyToAccount(priv_key)
     ssv_token = web_th.eth.contract(abi=abi_token_ssv, address=Web3.toChecksumAddress(address_ssv))
-    tx = ssv_token.functions.transfer(address_stakepool, amount * 10 ** 18).buildTransaction(
-        {'from': account.address, 'gasPrice': web_th.toWei('2', 'gwei'), 'gas': 5000000})
+    tx = ssv_token.functions.transfer(address_stakepool, int(amount) * 10 ** 18).buildTransaction({'from': account.address, 'gasPrice': web_th.toWei('2', 'gwei'), 'gas': 5000000})
     tx['nonce'] = web_th.eth.get_transaction_count(account.address)
     signed_tx = web_th.eth.account.sign_transaction(tx, account.key)
     tx_hash = web_th.eth.send_raw_transaction(signed_tx.rawTransaction)

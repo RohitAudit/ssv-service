@@ -6,11 +6,11 @@ async function main() {
     // const KeysManager = await ethers.getContractFactory("KeysManager");
     const StakingPool = await ethers.getContractFactory("StakingPool");
     const operator_ids = [1, 2, 9, 42]
-    const whitelist = "0xe7BB7b66d77E25656049e28638Df481c6D84072b"
+    const whitelist = "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
     const withdrawal_creds = "0xfabb0ac9d68b0b445fb7357272ff202c5651694a"
-    const deposit_contract = "0xff50ed3d0ec03ac01d4c79aad74928bff48a7b2b"
-    const ssv_network_contract = "0xb9e155e65B5c4D66df28Da8E9a0957f06F11Bc04"
-    const ssv_token_address = "0x3a9f01091C446bdE031E39ea8354647AFef091E7"
+    const deposit_contract = "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82"
+    const ssv_network_contract = "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0"
+    const ssv_token_address = "0x610178dA211FEF7D417bC0e6FeD39F05609AD788"
     const oracle_address = "0xfabb0ac9d68b0b445fb7357272ff202c5651694a"
     const common = await Common.deploy();
     console.log("Common contract deployed to:", common.address)
