@@ -1,3 +1,4 @@
+import json
 import os
 from typing import Any
 from eth_typing import HexAddress, HexStr
@@ -77,7 +78,7 @@ def start_staking(config):
     :return:
     """
     while True:
-        mnemonic = get_mnemonic(language="english", words_path=WORD_LISTS_PATH)
+        mnemonic = get_mnemonic(language="english", words_path=WORD_LISTS_PATH) #mnemonic
         web3_eth = EthNode(config.eth_rpc, config.private_key)
         if web3_eth.get_balance(config.staking_pool) >= 32:
             print("balance of staking pool:" + str(web3_eth.get_balance(config.staking_pool)))
@@ -148,6 +149,17 @@ if __name__ == '__main__':
     subparses = parser.add_subparsers()
     stake = subparses.add_parser("stake",
                                  help="used to start a service that tracks stakinpool contract for keys and key shares")
+    # file = open("config.json","w")
+    # with open("config.json","w") as file:
+    #     config = json.load(file)
+    # config["priv_key"] = "test"
+    # file.close()
+    # print(config['priv_key'])
+
+    # start_staking(config)
+
+
+
     keys = subparses.add_parser("create-keys", help="create n keys and their keyshares")
 
     stake.add_argument("-priv", "--private-key",
