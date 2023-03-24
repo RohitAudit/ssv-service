@@ -15,6 +15,7 @@ GOERLI = 'goerli'
 PRATER = 'prater'
 KILN = 'kiln'
 SEPOLIA = 'sepolia'
+Zheijang = 'zheijang'
 
 
 # Mainnet setting
@@ -28,6 +29,8 @@ KilnSetting = BaseChainSetting(NETWORK_NAME=KILN, GENESIS_FORK_VERSION=bytes.fro
 # Sepolia setting
 SepoliaSetting = BaseChainSetting(NETWORK_NAME=SEPOLIA, GENESIS_FORK_VERSION=bytes.fromhex('90000069'))
 
+ZheijangSetting = BaseChainSetting(NETWORK_NAME=SEPOLIA, GENESIS_FORK_VERSION=bytes.fromhex('00000069'))
+
 
 ALL_CHAINS: Dict[str, BaseChainSetting] = {
     MAINNET: MainnetSetting,
@@ -36,6 +39,7 @@ ALL_CHAINS: Dict[str, BaseChainSetting] = {
     PRATER: GoerliSetting,  # Prater is the old name of the Prater/Goerli testnet
     KILN: KilnSetting,
     SEPOLIA: SepoliaSetting,
+    Zheijang:ZheijangSetting
 }
 
 

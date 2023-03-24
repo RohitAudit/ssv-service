@@ -81,11 +81,30 @@ class StakingPool:
                 "type": "uint256"
             }
         ],
-        "name": "submitValidatorShares",
+        "name": "depositShares",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
-    }]
+    },  {
+    "inputs": [
+      { "internalType": "bytes", "name": "pubkey", "type": "bytes" },
+      {
+        "internalType": "bytes",
+        "name": "withdrawal_credentials",
+        "type": "bytes"
+      },
+      { "internalType": "bytes", "name": "signature", "type": "bytes" },
+      {
+        "internalType": "bytes32",
+        "name": "deposit_data_root",
+        "type": "bytes32"
+      }
+    ],
+    "name": "deposit",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  }]
 
     contract = None
 
@@ -94,14 +113,16 @@ class StakingPool:
 
         :param keysmanager_address:
         """
-        self.contract = web3.eth.contract(address=stakepool_contract, abi=self.abi)
+        self.contract = web3.eth.contract(
+            address=stakepool_contract, abi=self.abi)
 
     def get_withdrawal_address(self):
         return self.contract.functions.WITHDRAWAL_ADDRESS().call()
 
     def deposit_validator(self, pubkey, withdrawal_creds, signature, deposit_data_root, account_address):
-        return self.contract.functions.depositValidator(pubkey, withdrawal_creds, signature,
-                                                        deposit_data_root).buildTransaction({"from": account_address})
+        return self.contract.functions.deposit(pubkey, withdrawal_creds, signature,
+                                                        deposit_data_root).buildTransaction(
+            {"from": account_address, "value": 32*10**18})
 
     def get_operator_ids(self):
         """
@@ -115,5 +136,6 @@ class StakingPool:
 
         :return:
         """
-        return self.contract.functions.submitValidatorShares(pubkey, operator_ids, sharesPublicKeys, sharesEncrypted,
-                                                             amount).buildTransaction({"from": account_address})
+        return self.contract.functions.depositShares(pubkey, operator_ids, sharesPublicKeys, sharesEncrypted,
+                                                     amount).buildTransaction(
+            {"from": account_address, "maxFeePerGas": 10 ** 12})

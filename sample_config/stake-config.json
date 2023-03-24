@@ -1,0 +1,14 @@
+{
+  "eth": {
+    "rpc": "http://18.143.66.255:8545",
+    "priv_key": "3b8262baeba1dd4f639fee39d3f212bd65c1eec835907dcbf0631adb7981be70"
+  },
+  "contract_address": {
+    "ssv_network": "0xb9e155e65B5c4D66df28Da8E9a0957f06F11Bc04",
+    "stakepool": "0x721Bab0B19203343fFcb1585027DF60B03194679",
+    "ssv_token": "0x3a9f01091C446bdE031E39ea8354647AFef091E7",
+    "withdrawal_contract": "0x9209A7d8C47eb8f3383a8377239ebD9331b9d844"
+  },
+  "keystore_pass": "testing",
+  "operator_id" : [1,2,9,42]
+}
